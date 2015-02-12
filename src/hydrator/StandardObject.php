@@ -65,7 +65,7 @@ class StandardObject implements Hydrator {
         $methods[] = $key;
         $methods[] = $this->makeMethodName($key);
         foreach ($methods as $method) {
-            if (is_callable([$data, $method])) {
+            if (method_exists($data, $method) && is_callable([$data, $method])) {
                 return $data->$method();
             }
         }
