@@ -1,0 +1,41 @@
+{
+    "name": "voilab/mapping",
+    "description": "Mapping system to promote a constant output from a set of datas",
+    "keywords": [
+        "voilab",
+        "mapping"
+    ],
+    "homepage": "http://www.voilab.ch",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Voilab",
+            "email": "fabien@voilab.org",
+            "homepage": "http://www.voilab.ch",
+            "role": "Developer"
+        },
+        {
+            "name": "Voilab",
+            "email": "joel@voilab.org",
+            "homepage": "http://www.voilab.ch",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "voilab\\mapping\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "voilab\\mapping\\test\\": "tests"
+        }
+    }
+}
