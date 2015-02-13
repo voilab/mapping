@@ -48,7 +48,11 @@ class StandardObject implements Hydrator {
     /**
      * Check which method exists inside this object and try to call them. This
      * method is ORM agnostic, since it just tries to call some common method
-     * names on the object
+     * names on the object.
+     *
+     * Notice that if object implements __call magic method, you probably will
+     * need to extend this class to take care of it, since it just checks here
+     * if method is defined and callable in the current object.
      *
      * @param object $data
      * @param string $key
