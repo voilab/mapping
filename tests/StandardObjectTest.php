@@ -122,4 +122,17 @@ class StandardObjectTest extends MappingTestCase {
         ], $result);
     }
 
+    public function testUndefinedMethodOnMagicCallObject() {
+        $result = $this->mapping->map(
+            new data\UserMagicCall(1), [
+                'id',
+                'unavailable'
+            ]
+        );
+        $this->assertSame([
+            'id' => 1,
+            'unavailable' => null
+        ], $result);
+    }
+
 }

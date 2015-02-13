@@ -126,3 +126,16 @@ class Collection implements \IteratorAggregate, \ArrayAccess {
     }
 
 }
+
+class UserMagicCall extends User {
+
+    public function __call($name, $args) {
+        if (method_exists($this, $name) && is_callable([$this, $name])) {
+            return $this->$name();
+        } elseif (property_exists($this, $name) && isset($this->$name)) {
+            return $this->$name;
+        }
+        throw new \Exception('Method or property [' . $name . "] doesn't exist");
+    }
+
+}
