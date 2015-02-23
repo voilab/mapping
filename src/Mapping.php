@@ -212,16 +212,17 @@ class Mapping {
     private function getDataFromDottedKey($data, $key, $m) {
         $tmp = explode('.', $key);
         // remove last element, which is the field name
-        $key = array_pop($tmp);
-
-        // traverse all relations to find in the end the
-        // one having the field name
+        $last_key = array_pop($tmp);
+        // traverse all relations to find in the end the one having the field
+        // name
         while (count($tmp)) {
             $dkey = array_shift($tmp);
             foreach ($this->plugins as $plugin) {
-                if ($plugin->match($dkey)) {
+                if ($plugin->match($dkey, $key)) {
                     $data = $plugin->getData($this, $data, $dkey);
-                    $m = $plugin->setMap(isset($m[$dkey]) ? $m[$dkey] : []);
+                    $m = isset($m[$dkey])
+                        ? ($this->isCollection($m[$dkey]) ? $m[$dkey][0] : $m[$dkey])
+                        : [];
                     break;
                 }
             }
@@ -229,7 +230,7 @@ class Mapping {
                 return [null, null];
             }
         }
-        return [$data, $key];
+        return [$data, $last_key];
     }
 
 }
