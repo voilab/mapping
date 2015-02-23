@@ -93,4 +93,30 @@ class StandardArrayTest extends MappingTestCase {
         $this->assertSame($data, $result);
     }
 
+    public function testNestedCollections() {
+        $data = [
+            'level' => 1,
+            'items' => [
+                0 => [
+                    'level' => 2,
+                    'tests' => [
+                        0 => [
+                            'level' => 3,
+                            'item' => [
+                                'level' => 4,
+                                'ok' => true
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+        $result = $this->mapping->map($data, [
+            'deep-relation' => 'items[].tests[].item.ok'
+        ]);
+        $this->assertSame([
+            'deep-relation' => true
+        ], $result);
+    }
+
 }
