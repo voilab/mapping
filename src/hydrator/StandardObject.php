@@ -2,20 +2,22 @@
 
 namespace voilab\mapping\hydrator;
 
-class StandardObject implements Hydrator {
+use voilab\mapping\plugin;
 
-    /**
-     * @inheritDocs
-     */
-    public function isTraversable($data) {
-        return $data instanceof \Traversable;
-    }
+class StandardObject implements Hydrator, plugin\FirstInCollectionInterface {
 
     /**
      * @inheritDocs
      */
     public function getFirst($data) {
         return $data instanceof \ArrayAccess ? $data->offsetGet(0) : null;
+    }
+
+    /**
+     * @inheritDocs
+     */
+    public function isTraversable($data) {
+        return $data instanceof \Traversable;
     }
 
     /**
