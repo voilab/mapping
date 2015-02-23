@@ -152,7 +152,7 @@ class Mapping {
     /**
      * Get best hydrator depending on data structure. Data can be array or
      * object, but can be both. For example, collections could be simple arrays
-     * but each item coulb be object. We need for each action to be sure of
+     * but each item could be object. We need for each action to be sure of
      * which hydrator to use.
      *
      * @param array|object $data
@@ -196,34 +196,22 @@ class Mapping {
         // remove last element, which is the field name
         $key = array_pop($tmp);
 
-        // the dotted key can access data that is not specified in the
-        // initial mapping. We must verify the mapping and create the keys
-        // if they don't exist
-        $o =& $m;
-        foreach ($tmp as $t) {
-            if (!isset($o[$t])) {
-                $o[$t] = [];
-            }
-            $o =& $o[$t];
-        }
-        // now $m, thanks to $o, is modified and has all the mapping needed
-        $o[] = $key;
-
         // traverse all relations to find in the end the
         // one having the field name
         while (count($tmp)) {
             $dkey = array_shift($tmp);
-            $mkey = $dkey;
             $is_col = false;
             if (strpos($dkey, '[]')) {
                 $dkey = str_replace('[]', '', $dkey);
                 $is_col = true;
             }
+
             $data = $this->getHydrator($data)->getRelation($data, $dkey);
-            $m = $m[$mkey];
+
+            $m = isset($m[$dkey]) ? $m[$dkey] : [];
             if ($is_col || $this->isCollection($m)) {
                 $data = $this->getHydrator($data)->getFirst($data);
-                $m = $is_col ? $m : $m[0];
+                $m = isset($m[0]) ? $m[0] : $m;
             }
             if (!$data) {
                 return [null, null];

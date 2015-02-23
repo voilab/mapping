@@ -148,7 +148,7 @@ class MappingTestCase extends \PHPUnit_Framework_TestCase {
         ], $result);
     }
 
-    public function testDottedKey() {
+    public function testDottedKeyWithoutExistingMapping() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
                 'group-name' => 'mainGroup.name'
@@ -156,6 +156,23 @@ class MappingTestCase extends \PHPUnit_Framework_TestCase {
         );
         $this->assertSame([
             'group-name' => 'groupA'
+        ], $result);
+    }
+
+    public function testDottedKeyWithExistingMapping() {
+        $result = $this->mapping->map(
+            $this->data->getUser(1), [
+                'group-name' => 'mainGroup.name',
+                'mainGroup' => [
+                    'name'
+                ]
+            ]
+        );
+        $this->assertSame([
+            'group-name' => 'groupA',
+            'mainGroup' => [
+                'name' => 'groupA'
+            ]
         ], $result);
     }
 
@@ -170,7 +187,7 @@ class MappingTestCase extends \PHPUnit_Framework_TestCase {
         ], $result);
     }
 
-    public function testDottedCollectionKey() {
+    public function testDottedCollectionKeyWithoutExistingMapping() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
                 'group-name' => 'groups[].name'
@@ -178,6 +195,24 @@ class MappingTestCase extends \PHPUnit_Framework_TestCase {
         );
         $this->assertSame([
             'group-name' => 'group1'
+        ], $result);
+    }
+
+    public function testDottedCollectionKeyWithExistingMapping() {
+        $result = $this->mapping->map(
+            $this->data->getUser(1), [
+                'group-name' => 'groups[].name',
+                'groups' => [[
+                    'name'
+                ]]
+            ]
+        );
+        $this->assertSame([
+            'group-name' => 'group1',
+            'groups' => [
+                ['name' => 'group1'],
+                ['name' => 'group2']
+            ]
         ], $result);
     }
 
