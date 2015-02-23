@@ -31,6 +31,7 @@ class MappingTestCase extends \PHPUnit_Framework_TestCase {
 
     public function setMapping(hydrator\Hydrator $objectHydrator = null, hydrator\Hydrator $arrayHydrator = null) {
         $this->mapping = new \voilab\mapping\Mapping($objectHydrator, $arrayHydrator);
+        $this->mapping->addPlugin(new \voilab\mapping\plugin\FirstInCollection());
         return $this;
     }
 

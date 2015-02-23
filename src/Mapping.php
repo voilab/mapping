@@ -23,15 +23,33 @@ class Mapping {
     private $objectHydrator;
 
     /**
+     * Plugins used to manage dotted-keys
+     * @var plugin\Plugin[]
+     */
+    private $plugins = [];
+
+    /**
      * Constructor. Default hydrators are StandardObject and StandardArray.
      *
-     * @param \voilab\mapping\hydrator\Hydrator $objectHydrator
-     * @param \voilab\mapping\hydrator\Hydrator $arrayHydrator
+     * @param hydrator\Hydrator $objectHydrator
+     * @param hydrator\Hydrator $arrayHydrator
      */
     public function __construct (hydrator\Hydrator $objectHydrator = null, hydrator\Hydrator $arrayHydrator = null) {
         $this
+            ->addPlugin(new plugin\Relation())
             ->setArrayHydrator($arrayHydrator ?: new hydrator\StandardArray())
             ->setObjectHydrator($objectHydrator ?: new hydrator\StandardObject());
+    }
+
+    /**
+     * Add a plugin for dotted-key management
+     *
+     * @param plugin\Plugin $plugin
+     * @return Mapping
+     */
+    public function addPlugin(plugin\Plugin $plugin) {
+        array_unshift($this->plugins, $plugin);
+        return $this;
     }
 
     /**
@@ -72,6 +90,19 @@ class Mapping {
         // if no mapping is set, force array, so an object is automatically
         // transformed.
         return $mapping ? $this->recursiveMap($body, $mapping) : $this->getHydrator($body)->toArray($body);
+    }
+
+    /**
+     * Get best hydrator depending on data structure. Data can be array or
+     * object, but can be both. For example, collections could be simple arrays
+     * but each item could be object. We need for each action to be sure of
+     * which hydrator to use.
+     *
+     * @param array|object $data
+     * @return hydrator\Hydrator
+     */
+    public function getHydrator($data) {
+        return is_array($data) ? $this->arrayHydrator : $this->objectHydrator;
     }
 
     /**
@@ -150,19 +181,6 @@ class Mapping {
     }
 
     /**
-     * Get best hydrator depending on data structure. Data can be array or
-     * object, but can be both. For example, collections could be simple arrays
-     * but each item could be object. We need for each action to be sure of
-     * which hydrator to use.
-     *
-     * @param array|object $data
-     * @return hydrator\Hydrator
-     */
-    private function getHydrator($data) {
-        return is_array($data) ? $this->arrayHydrator : $this->objectHydrator;
-    }
-
-    /**
      * Return the content in the data array/object
      *
      * @param array|object $data
@@ -200,18 +218,12 @@ class Mapping {
         // one having the field name
         while (count($tmp)) {
             $dkey = array_shift($tmp);
-            $is_col = false;
-            if (strpos($dkey, '[]')) {
-                $dkey = str_replace('[]', '', $dkey);
-                $is_col = true;
-            }
-
-            $data = $this->getHydrator($data)->getRelation($data, $dkey);
-
-            $m = isset($m[$dkey]) ? $m[$dkey] : [];
-            if ($is_col || $this->isCollection($m)) {
-                $data = $this->getHydrator($data)->getFirst($data);
-                $m = isset($m[0]) ? $m[0] : $m;
+            foreach ($this->plugins as $plugin) {
+                if ($plugin->match($dkey)) {
+                    $data = $plugin->getData($this, $data, $dkey);
+                    $m = $plugin->setMap(isset($m[$dkey]) ? $m[$dkey] : []);
+                    break;
+                }
             }
             if (!$data) {
                 return [null, null];
