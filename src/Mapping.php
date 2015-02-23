@@ -144,12 +144,12 @@ class Mapping {
                 // key is int. That means we want the same key for mapping and
                 // for the data array/obj.
                 elseif (is_int($key)) {
-                    $map[$m] = $this->getKeyContent($data, $m, $mapping);
+                    $map[$m] = $this->getKeyContent($data, $m);
                 }
                 // value is string. It's either a simple property of the
                 // array/obj or it's a function to call in the object
                 elseif (is_string($m)) {
-                    $map[$key] = $this->getKeyContent($data, $m, $mapping);
+                    $map[$key] = $this->getKeyContent($data, $m);
                 }
                 // value is function. Call this function with data as first
                 // argument
@@ -185,14 +185,13 @@ class Mapping {
      *
      * @param array|object $data
      * @param string $key
-     * @param array $m
      * @return mixed
      */
-    private function getKeyContent($data, $key, $m) {
+    private function getKeyContent($data, $key) {
         // if mapping has dots, we will look for the
         // deepest relation
         if (strpos($key, '.') !== false) {
-            list($data, $key) = $this->getDataFromDottedKey($data, $key, $m);
+            list($data, $key) = $this->getDataFromDottedKey($data, $key);
             if (!$data) {
                 return null;
             }
@@ -206,10 +205,9 @@ class Mapping {
      *
      * @param array|object $data
      * @param string $key
-     * @param array $m
      * @return array [$data, $key]
      */
-    private function getDataFromDottedKey($data, $key, $m) {
+    private function getDataFromDottedKey($data, $key) {
         $tmp = explode('.', $key);
         // remove last element, which is the field name
         $last_key = array_pop($tmp);
@@ -220,14 +218,16 @@ class Mapping {
             foreach ($this->plugins as $plugin) {
                 if ($plugin->match($dkey, $key)) {
                     $data = $plugin->getData($this, $data, $dkey);
-                    $m = isset($m[$dkey])
-                        ? ($this->isCollection($m[$dkey]) ? $m[$dkey][0] : $m[$dkey])
-                        : [];
-                    break;
+                    if ($data) {
+                        // relation is found, continue to the next $dkey inside
+                        // the while loop
+                        break 1;
+                    } else {
+                        // relation is not found, quit foreach and while loops
+                        // and return a $data with null value
+                        break 2;
+                    }
                 }
-            }
-            if (!$data) {
-                return [null, null];
             }
         }
         return [$data, $last_key];
