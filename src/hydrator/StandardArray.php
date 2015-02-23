@@ -2,14 +2,9 @@
 
 namespace voilab\mapping\hydrator;
 
-class StandardArray implements Hydrator {
+use voilab\mapping\plugin;
 
-    /**
-     * @inheritDocs
-     */
-    public function isTraversable($data) {
-        return isset($data[0]) || !count($data);
-    }
+class StandardArray implements Hydrator, plugin\FirstInCollectionInterface {
 
     /**
      * @inheritDocs
@@ -18,6 +13,13 @@ class StandardArray implements Hydrator {
         // check if array OR object, because an array-collection could
         // contain objects
         return isset($data[0]) && (is_object($data[0]) || is_array($data[0])) ? $data[0] : null;
+    }
+
+    /**
+     * @inheritDocs
+     */
+    public function isTraversable($data) {
+        return isset($data[0]) || !count($data);
     }
 
     /**

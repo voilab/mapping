@@ -13,15 +13,6 @@ interface Hydrator {
     public function isTraversable($data);
 
     /**
-     * Get first item in a collection. This method is always called with a
-     * data that is explicitly a collection
-     *
-     * @param mixed $data
-     * @return array|object
-     */
-    public function getFirst($data);
-
-    /**
      * Get the related data
      *
      * @param array|object $data
