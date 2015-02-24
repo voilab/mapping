@@ -7,21 +7,15 @@ class Relation implements Plugin {
     /**
      * @inheritDocs
      */
-    public function match ($key) {
+    public function match ($key, $dottedKey) {
         return true;
     }
 
     /**
      * @inheritDocs
      */
-    public function getData(\voilab\mapping\Mapping $map, $data, $key) {
-        return $map->getHydrator($data)->getRelation($data, $key);
+    public function getData(\voilab\mapping\Mapping $mapping, $data, $key) {
+        return $mapping->getHydrator($data)->getRelation($data, $key);
     }
 
-    /**
-     * @inheritDocs
-     */
-    public function setMap(array $map) {
-        return $map;
-    }
 }

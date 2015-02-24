@@ -11,6 +11,12 @@ class Mapping {
     const RELATION_KEY = '__accessor__';
 
     /**
+     * The separator used in the mapping key that triggers plugins operations
+     * @var string
+     */
+    private $pluginKeySeparator = '.';
+
+    /**
      * Hydrator used to fetch data from an array structure
      * @var hydrator\Hydrator
      */
@@ -39,6 +45,18 @@ class Mapping {
             ->addPlugin(new plugin\Relation())
             ->setArrayHydrator($arrayHydrator ?: new hydrator\StandardArray())
             ->setObjectHydrator($objectHydrator ?: new hydrator\StandardObject());
+    }
+
+    /**
+     * Set the separator used in the mapping key that triggers plugins
+     * operations
+     *
+     * @param string $separator can be multiple chars (used in explode())
+     * @return Mapping
+     */
+    public function setPluginKeySeparator($separator) {
+        $this->pluginKeySeparator = $separator;
+        return $this;
     }
 
     /**
@@ -144,12 +162,12 @@ class Mapping {
                 // key is int. That means we want the same key for mapping and
                 // for the data array/obj.
                 elseif (is_int($key)) {
-                    $map[$m] = $this->getKeyContent($data, $m, $mapping);
+                    $map[$m] = $this->getKeyContent($data, $m);
                 }
                 // value is string. It's either a simple property of the
                 // array/obj or it's a function to call in the object
                 elseif (is_string($m)) {
-                    $map[$key] = $this->getKeyContent($data, $m, $mapping);
+                    $map[$key] = $this->getKeyContent($data, $m);
                 }
                 // value is function. Call this function with data as first
                 // argument
@@ -176,8 +194,8 @@ class Mapping {
      * @param array $mapping
      * @return boolean
      */
-    private function isCollection($mapping) {
-        return $mapping && isset($mapping[0]) && is_array($mapping[0]) && count($mapping) == 1;
+    private function isCollection(array $mapping) {
+        return isset($mapping[0]) && is_array($mapping[0]) && count($mapping) == 1;
     }
 
     /**
@@ -185,14 +203,13 @@ class Mapping {
      *
      * @param array|object $data
      * @param string $key
-     * @param array $m
      * @return mixed
      */
-    private function getKeyContent($data, $key, $m) {
+    private function getKeyContent($data, $key) {
         // if mapping has dots, we will look for the
         // deepest relation
-        if (strpos($key, '.') !== false) {
-            list($data, $key) = $this->getDataFromDottedKey($data, $key, $m);
+        if (strpos($key, $this->pluginKeySeparator) !== false) {
+            list($data, $key) = $this->getDataFromPlugins($data, $key);
             if (!$data) {
                 return null;
             }
@@ -201,35 +218,36 @@ class Mapping {
     }
 
     /**
-     * Get key and data from a dotted key. Traverse mapping to find the right
-     * data in the right relation
+     * Get key and data from dotted (or any user defined string) key. Traverse
+     * mapping to find the right data in the right relation
      *
      * @param array|object $data
      * @param string $key
-     * @param array $m
      * @return array [$data, $key]
      */
-    private function getDataFromDottedKey($data, $key, $m) {
-        $tmp = explode('.', $key);
+    private function getDataFromPlugins($data, $key) {
+        $tmp = explode($this->pluginKeySeparator, $key);
         // remove last element, which is the field name
-        $key = array_pop($tmp);
-
-        // traverse all relations to find in the end the
-        // one having the field name
+        $last_key = array_pop($tmp);
+        // traverse relations to find in the end the one having the field name
         while (count($tmp)) {
             $dkey = array_shift($tmp);
             foreach ($this->plugins as $plugin) {
-                if ($plugin->match($dkey)) {
+                if ($plugin->match($dkey, $key)) {
                     $data = $plugin->getData($this, $data, $dkey);
-                    $m = $plugin->setMap(isset($m[$dkey]) ? $m[$dkey] : []);
-                    break;
+                    if ($data) {
+                        // relation is found, continue to the next $dkey inside
+                        // the while loop
+                        break 1;
+                    } else {
+                        // relation is not found, quit foreach and while loops
+                        // and return a $data with null value
+                        break 2;
+                    }
                 }
             }
-            if (!$data) {
-                return [null, null];
-            }
         }
-        return [$data, $key];
+        return [$data, $last_key];
     }
 
 }

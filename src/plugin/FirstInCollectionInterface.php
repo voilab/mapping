@@ -9,8 +9,7 @@ namespace voilab\mapping\plugin;
 interface FirstInCollectionInterface {
 
     /**
-     * Get first item in a collection. This method is always called with a
-     * data that is explicitly a collection
+     * Get first item in a collection
      *
      * @param mixed $data
      * @return array|object

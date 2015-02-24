@@ -7,26 +7,19 @@ class FirstInCollection implements Plugin {
     /**
      * @inheritDocs
      */
-    public function match ($key) {
+    public function match ($key, $dottedKey) {
         return strpos($key, '[]') > 0;
     }
 
     /**
      * @inheritDocs
      */
-    public function getData(\voilab\mapping\Mapping $map, $data, $key) {
+    public function getData(\voilab\mapping\Mapping $mapping, $data, $key) {
         $key = str_replace('[]', '', $key);
-        $relation = $map->getHydrator($data)->getRelation($data, $key);
+        $relation = $mapping->getHydrator($data)->getRelation($data, $key);
         return $relation
-            ? $this->getFirst($map->getHydrator($relation), $relation)
+            ? $this->getFirst($mapping->getHydrator($relation), $relation)
             : null;
-    }
-
-    /**
-     * @inheritDocs
-     */
-    public function setMap(array $map) {
-        return isset($map[0]) ? $map[0] : $map;
     }
 
     /**
