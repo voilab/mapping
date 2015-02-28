@@ -201,7 +201,8 @@ $mapped = $mapping->map($data, [
 ```
 
 ## Plugins
-### One-to-one or many-to-one relation mapping
+### Deep one-to-one or many-to-one relation mapping
+Goes through a tree of one-to-one or many-to-one relations, until it reaches the key (here: type for section and name for interests).
 ```php
 $mapped = $mapping->map($data, [
     'sectionType' => 'work.section.type',
@@ -220,7 +221,8 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
-### One-to-many or many-to-many relation mapping
+### Deep first one-to-many or many-to-many relation mapping
+When encountering a one-to-many or many-to-many relation, it fetch the 1st element in the collection, and then tries to fetch the other relations, before accessing the key (here: name).
 ```php
 $mapped = $mapping->map($data, [
     'firstInterestContactName' => 'interests[].contact.name'
