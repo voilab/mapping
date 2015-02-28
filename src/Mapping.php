@@ -124,6 +124,33 @@ class Mapping {
     }
 
     /**
+     * Get the related dataset (array or object)
+     *
+     * @param array|object $data
+     * @param string $key
+     * @return array|object
+     */
+    public function getRelation($data, $key) {
+        return $this->getHydrator($data)->getRelation($data, $key);
+    }
+
+    /**
+     * Get the related dataset (array or object) and the hydrator that depends
+     * to the new dataset
+     *
+     * @param array|object $data
+     * @param string $key
+     * @return [array|object, hydrator\Hydrator]
+     */
+    public function getRelationAndHydrator($data, $key) {
+        $relation = $this->getRelation($data, $key);
+        return [
+            $relation,
+            $this->getHydrator($relation)
+        ];
+    }
+
+    /**
      * Create the mapped data array
      *
      * @param array|object $data
@@ -152,7 +179,7 @@ class Mapping {
                         $relkey = $m[self::RELATION_KEY];
                         unset($m[self::RELATION_KEY]);
                     }
-                    $relation = $this->getHydrator($data)->getRelation($data, $relkey);
+                    $relation = $this->getRelation($data, $relkey);
                     $map[$key] = $relation ? $this->recursiveMap($relation, $m) : (
                         // if relation is null, set an empty array for
                         // collections or null for toOne relations

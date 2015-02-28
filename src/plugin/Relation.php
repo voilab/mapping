@@ -15,7 +15,7 @@ class Relation implements Plugin {
      * @inheritDocs
      */
     public function getData(\voilab\mapping\Mapping $mapping, $data, $key) {
-        return $mapping->getHydrator($data)->getRelation($data, $key);
+        return $mapping->getRelation($data, $key);
     }
 
 }
