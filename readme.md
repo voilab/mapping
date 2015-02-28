@@ -180,6 +180,7 @@ $mapped = $mapping->map($data, [
 ```
 
 ### Wildcard mapping
+It's experimental with objects.
 ```php
 $mapped = $mapping->map($data, [
     'name',
