@@ -18,13 +18,13 @@ class Mapping {
 
     /**
      * Hydrator used to fetch data from an array structure
-     * @var hydrator\Hydrator
+     * @var Hydrator
      */
     private $arrayHydrator;
 
     /**
      * Hydrator used to fetch data from an object structure
-     * @var hydrator\Hydrator
+     * @var Hydrator
      */
     private $objectHydrator;
 
