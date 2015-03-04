@@ -2,7 +2,7 @@
 
 namespace voilab\mapping\plugin;
 
-class FirstInCollection implements Plugin {
+class FirstInCollection implements \voilab\mapping\Plugin {
 
     /**
      * @inheritDocs

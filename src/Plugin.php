@@ -1,6 +1,6 @@
 <?php
 
-namespace voilab\mapping\plugin;
+namespace voilab\mapping;
 
 interface Plugin {
 
@@ -23,11 +23,11 @@ interface Plugin {
      * want to fetch a collection-relation and fetch the last in the collection
      * or the first, or a random one.
      *
-     * @param \voilab\mapping\plugin\Mapping $mapping
+     * @param Mapping $mapping
      * @param mixed $data array or object representing the main dataset
      * @param string $key the relation name
      * @return mixed the subset of the main dataset ($data)
      */
-    public function getData(\voilab\mapping\Mapping $mapping, $data, $key);
+    public function getData(Mapping $mapping, $data, $key);
 
 }

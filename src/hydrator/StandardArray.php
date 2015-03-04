@@ -2,6 +2,7 @@
 
 namespace voilab\mapping\hydrator;
 
+use voilab\mapping\Hydrator;
 use voilab\mapping\plugin;
 
 class StandardArray implements Hydrator, plugin\FirstInCollectionInterface {

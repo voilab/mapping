@@ -1,6 +1,6 @@
 <?php
 
-namespace voilab\mapping\test\mock\data;
+namespace voilab\mapping\test\mock;
 
 class ArrayData implements Data {
 

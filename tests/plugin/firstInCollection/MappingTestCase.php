@@ -2,11 +2,11 @@
 
 namespace voilab\mapping\test\plugin\firstInCollection;
 
-use voilab\mapping\hydrator;
+use voilab\mapping\Hydrator;
 
 class MappingTestCase extends \voilab\mapping\test\AbstractMappingTestCase {
 
-    public function setMapping(hydrator\Hydrator $objectHydrator = null, hydrator\Hydrator $arrayHydrator = null) {
+    public function setMapping(Hydrator $objectHydrator = null, Hydrator $arrayHydrator = null) {
         parent::setMapping($objectHydrator, $arrayHydrator);
         $this->mapping->addPlugin(new \voilab\mapping\plugin\FirstInCollection());
         return $this;

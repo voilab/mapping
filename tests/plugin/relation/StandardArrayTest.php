@@ -2,7 +2,7 @@
 
 namespace voilab\mapping\test\plugin\relation;
 
-use voilab\mapping\test\mock\data;
+use voilab\mapping\test\mock;
 
 class StandardArrayTest extends MappingTestCase {
 
@@ -13,7 +13,7 @@ class StandardArrayTest extends MappingTestCase {
         $this->hydrator =  new \voilab\mapping\hydrator\StandardArray;
         $this
             ->setMapping(null, $this->hydrator)
-            ->setData(new data\ArrayData);
+            ->setData(new mock\ArrayData);
     }
 
     public function testNestedRelations() {

@@ -11,7 +11,7 @@ class StandardArrayTest extends MappingTestCase {
         $this->hydrator =  new \voilab\mapping\hydrator\StandardArray;
         $this
             ->setMapping(null, $this->hydrator)
-            ->setData(new mock\data\ArrayData);
+            ->setData(new mock\ArrayData);
     }
 
     public function testFunctionKey() {
