@@ -2,7 +2,9 @@
 
 namespace voilab\mapping\test;
 
-use voilab\mapping\test\mock\data;
+use voilab\mapping\test\mock\classes\User;
+use voilab\mapping\test\mock\classes\UserMagicCall;
+use voilab\mapping\test\mock\classes\Collection;
 
 class StandardObjectTest extends MappingTestCase {
 
@@ -13,15 +15,15 @@ class StandardObjectTest extends MappingTestCase {
         $this->hydrator = new \voilab\mapping\hydrator\StandardObject;
         $this
             ->setMapping($this->hydrator)
-            ->setData(new mock\data\StandardObjectData);
+            ->setData(new mock\StandardObjectData);
     }
 
     public function testFunctionKey() {
         parent::testFunctionKey(
-            function (data\User $data) {
+            function (User $data) {
                 return $this->functionId($data->getId());
             },
-            function (data\User $data) {
+            function (User $data) {
                 return $this->functionLogin($data->getLogin());
             }
         );
@@ -43,9 +45,9 @@ class StandardObjectTest extends MappingTestCase {
     }
 
     public function testIsTraversable() {
-        $user = new data\User(1);
-        $ok_full = new data\Collection([$user]);
-        $ok_empty = new data\Collection([]);
+        $user = new User(1);
+        $ok_full = new Collection([$user]);
+        $ok_empty = new Collection([]);
         $ko = $user;
 
         $this->assertTrue($this->hydrator->isTraversable($ok_full), 'ok full');
@@ -54,22 +56,22 @@ class StandardObjectTest extends MappingTestCase {
     }
 
     public function testGetFirst() {
-        $expected = new data\User(1);
-        $test = new data\collection([
+        $expected = new User(1);
+        $test = new collection([
             $expected,
-            new data\User(2)
+            new User(2)
         ]);
         $this->assertSame($expected, $this->hydrator->getFirst($test));
     }
 
     public function testGetRelation() {
-        $user = new data\User(1);
+        $user = new User(1);
         $this->assertSame($user->getMainGroup(), $this->hydrator->getRelation($user, 'mainGroup'));
         $this->assertNull($this->hydrator->getRelation($user, 'unavailable'));
     }
 
     public function testGetKeyContent() {
-        $user = new data\User(1);
+        $user = new User(1);
         $this->assertEquals(1, $this->hydrator->getKeyContent($user, 'id'));
         $this->assertNull($this->hydrator->getKeyContent($user, 'unavailable'));
     }
@@ -124,7 +126,7 @@ class StandardObjectTest extends MappingTestCase {
 
     public function testUndefinedMethodOnMagicCallObject() {
         $result = $this->mapping->map(
-            new data\UserMagicCall(1), [
+            new UserMagicCall(1), [
                 'id',
                 'unavailable'
             ]

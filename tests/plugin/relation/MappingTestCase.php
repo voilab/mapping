@@ -2,11 +2,11 @@
 
 namespace voilab\mapping\test\plugin\relation;
 
-use voilab\mapping\hydrator;
+use voilab\mapping\Hydrator;
 
 class MappingTestCase extends \voilab\mapping\test\AbstractMappingTestCase {
 
-    public function setMapping(hydrator\Hydrator $objectHydrator = null, hydrator\Hydrator $arrayHydrator = null) {
+    public function setMapping(Hydrator $objectHydrator = null, Hydrator $arrayHydrator = null) {
         parent::setMapping($objectHydrator, $arrayHydrator);
         // relation plugin is automatically added to the mapping plugins.
         // we keep this line commented so we can quickly see why these tests

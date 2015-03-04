@@ -2,7 +2,7 @@
 
 namespace voilab\mapping\test\plugin\firstInCollection;
 
-use voilab\mapping\test\mock\data;
+use voilab\mapping\test\mock;
 
 class StandardObjectTest extends MappingTestCase {
 
@@ -13,7 +13,7 @@ class StandardObjectTest extends MappingTestCase {
         $this->hydrator = new \voilab\mapping\hydrator\StandardObject;
         $this
             ->setMapping($this->hydrator)
-            ->setData(new data\StandardObjectData);
+            ->setData(new mock\StandardObjectData);
     }
 
 }

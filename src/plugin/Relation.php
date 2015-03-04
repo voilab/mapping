@@ -2,7 +2,7 @@
 
 namespace voilab\mapping\plugin;
 
-class Relation implements Plugin {
+class Relation implements \voilab\mapping\Plugin {
 
     /**
      * @inheritDocs

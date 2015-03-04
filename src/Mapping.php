@@ -37,10 +37,10 @@ class Mapping {
     /**
      * Constructor. Default hydrators are StandardObject and StandardArray.
      *
-     * @param hydrator\Hydrator $objectHydrator
-     * @param hydrator\Hydrator $arrayHydrator
+     * @param Hydrator $objectHydrator
+     * @param Hydrator $arrayHydrator
      */
-    public function __construct (hydrator\Hydrator $objectHydrator = null, hydrator\Hydrator $arrayHydrator = null) {
+    public function __construct (Hydrator $objectHydrator = null, Hydrator $arrayHydrator = null) {
         $this
             ->addPlugin(new plugin\Relation())
             ->setArrayHydrator($arrayHydrator ?: new hydrator\StandardArray())
@@ -62,10 +62,10 @@ class Mapping {
     /**
      * Add a plugin for dotted-key management
      *
-     * @param plugin\Plugin $plugin
+     * @param Plugin $plugin
      * @return Mapping
      */
-    public function addPlugin(plugin\Plugin $plugin) {
+    public function addPlugin(Plugin $plugin) {
         array_unshift($this->plugins, $plugin);
         return $this;
     }
@@ -73,10 +73,10 @@ class Mapping {
     /**
      * Set the array hydrator
      *
-     * @param hydrator\Hydrator $hydrator
+     * @param Hydrator $hydrator
      * @return Mapping
      */
-    public function setArrayHydrator(hydrator\Hydrator $hydrator) {
+    public function setArrayHydrator(Hydrator $hydrator) {
         $this->arrayHydrator = $hydrator;
         return $this;
     }
@@ -84,10 +84,10 @@ class Mapping {
     /**
      * Set the object hydrator
      *
-     * @param hydrator\Hydrator $hydrator
+     * @param Hydrator $hydrator
      * @return Mapping
      */
-    public function setObjectHydrator(hydrator\Hydrator $hydrator) {
+    public function setObjectHydrator(Hydrator $hydrator) {
         $this->objectHydrator = $hydrator;
         return $this;
     }
@@ -117,7 +117,7 @@ class Mapping {
      * which hydrator to use.
      *
      * @param array|object $data
-     * @return hydrator\Hydrator
+     * @return Hydrator
      */
     public function getHydrator($data) {
         return is_array($data) ? $this->arrayHydrator : $this->objectHydrator;
@@ -140,7 +140,7 @@ class Mapping {
      *
      * @param array|object $data
      * @param string $key
-     * @return [array|object, hydrator\Hydrator]
+     * @return [array|object, Hydrator]
      */
     public function getRelationAndHydrator($data, $key) {
         $relation = $this->getRelation($data, $key);

@@ -1,6 +1,6 @@
 <?php
 
-namespace voilab\mapping\hydrator;
+namespace voilab\mapping;
 
 interface Hydrator {
 
