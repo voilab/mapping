@@ -107,7 +107,9 @@ class Mapping {
     public function map($body, array $mapping = null) {
         // if no mapping is set, force array, so an object is automatically
         // transformed.
-        return $mapping ? $this->recursiveMap($body, $mapping) : $this->getHydrator($body)->toArray($body);
+        return $mapping
+            ? $this->recursiveMap($body, $mapping)
+            : $this->getHydrator($body)->toArray($body);
     }
 
     /**
@@ -172,7 +174,8 @@ class Mapping {
                 if ($m == '*') {
                     $use_wildcard = true;
                 }
-                // mapping is an array. Means that we want to check in a relation
+                // mapping is an array. Means that we want to check in a
+                // relation
                 elseif (is_array($m)) {
                     $relkey = $key;
                     if (isset($m[self::RELATION_KEY])) {
@@ -235,7 +238,7 @@ class Mapping {
     private function getKeyContent($data, $key) {
         // if mapping has dots, we will look for the
         // deepest relation
-        if (strpos($key, $this->pluginKeySeparator) !== false) {
+        if ($this->pluginKeySeparator && strpos($key, $this->pluginKeySeparator) !== false) {
             list($data, $key) = $this->getDataFromPlugins($data, $key);
             if (!$data) {
                 return null;
