@@ -57,6 +57,8 @@ $data = [
 ```
 
 ## Examples
+This piece of script helps you to obtain a constant output structure no matter how the input data is hydrated (array or object).
+
 ### Simple mapping
 ```php
 $mapped = $mapping->map($data, [
@@ -124,23 +126,6 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
-### Change relation mapping key
-```php
-$mapped = $mapping->map($data, [
-    'nextWork' => [
-        \voilab\mapping\Mapping::RELATION_KEY => 'work',
-        'description'
-    ]
-]);
-
-// results in
-[
-    'nextWork' => [
-        'description' => 'Free worker'
-    ]
-]
-```
-
 ### One-to-many or many-to-many relation mapping
 ```php
 $mapped = $mapping->map($data, [
@@ -179,6 +164,31 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
+### Change relation mapping key
+```php
+$mapped = $mapping->map($data, [
+    \voilab\mapping\Mapping::rel('work', 'nextWork') => [
+        'description'
+    ]
+]);
+
+// results in
+[
+    'nextWork' => [
+        'description' => 'Free worker'
+    ]
+]
+```
+As an alternative, you may use this notation below. Code should not change anytime soon.
+```php
+$mapped = $mapping->map($data, [
+    'work as nextWork' => [
+        'description'
+    ]
+]);
+```
+
+
 ### Wildcard mapping
 It's experimental with objects.
 ```php
@@ -200,7 +210,31 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
+### Other thoughts
+#### Change hydrators
+There are two default hydrators. One manage arrays (collection and relation) and the other manage objects (collection and relation).
+If your data needs to be handled differently, you will need to create your own hydrators (which must extend \voilab\mapping\Hydrator) and then set them at construction time:
+```php
+$mapping = new \voilab\mapping\Mapping(
+    new \my\object\Hydrator(),
+    new \my\array\Hydrator()
+);
+```
+
 ## Plugins
+### Introduction
+#### Configuration
+The plugin "Deep one-to-one or many-to-one relation mapping" is always active. If you want to add other plugins, just do this when initializing the mapping object:
+```php
+$mapping->addPlugin(new \voilab\mapping\plugin\FirstInCollection());
+```
+
+#### Disable plugin management
+If you don't want to call any plugin (even the default one), simply set the plugin key separator to null.
+```php
+$mapping->setPluginKeySeparator(null);
+```
+
 ### Deep one-to-one or many-to-one relation mapping
 Goes through a tree of one-to-one or many-to-one relations, until it reaches the key (here: type for section and name for interests).
 ```php
@@ -224,6 +258,8 @@ $mapped = $mapping->map($data, [
 ### Deep first one-to-many or many-to-many relation mapping
 When encountering a one-to-many or many-to-many relation, it fetch the 1st element in the collection, and then tries to fetch the other relations, before accessing the key (here: name).
 ```php
+$mapping->addPlugin(new \voilab\mapping\plugin\FirstInCollection());
+
 $mapped = $mapping->map($data, [
     'firstInterestContactName' => 'interests[].contact.name'
 ]);
