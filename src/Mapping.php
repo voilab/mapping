@@ -8,7 +8,7 @@ class Mapping {
      * Used to change the relation's data accessor to an other string
      * @var string
      */
-    const RELATION_KEY = '__accessor__';
+    const RELATION_ALIAS = ' as ';
 
     /**
      * The separator used in the mapping key that triggers plugins operations
@@ -33,6 +33,17 @@ class Mapping {
      * @var plugin\Plugin[]
      */
     private $plugins = [];
+
+    /**
+     * Get the key string for an alias to a relation
+     *
+     * @param string $relation the relation key
+     * @param string $alias the relation alias
+     * @return string
+     */
+    public static function rel($relation, $alias) {
+        return $relation . self::RELATION_ALIAS . $alias;
+    }
 
     /**
      * Constructor. Default hydrators are StandardObject and StandardArray.
@@ -178,9 +189,10 @@ class Mapping {
                 // relation
                 elseif (is_array($m)) {
                     $relkey = $key;
-                    if (isset($m[self::RELATION_KEY])) {
-                        $relkey = $m[self::RELATION_KEY];
-                        unset($m[self::RELATION_KEY]);
+                    if (strpos($key, self::RELATION_ALIAS)) {
+                        $tmp = explode(self::RELATION_ALIAS, $key);
+                        $key = trim($tmp[1]);
+                        $relkey = trim($tmp[0]);
                     }
                     $relation = $this->getRelation($data, $relkey);
                     $map[$key] = $relation ? $this->recursiveMap($relation, $m) : (

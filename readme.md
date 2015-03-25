@@ -126,23 +126,6 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
-### Change relation mapping key
-```php
-$mapped = $mapping->map($data, [
-    'nextWork' => [
-        \voilab\mapping\Mapping::RELATION_KEY => 'work',
-        'description'
-    ]
-]);
-
-// results in
-[
-    'nextWork' => [
-        'description' => 'Free worker'
-    ]
-]
-```
-
 ### One-to-many or many-to-many relation mapping
 ```php
 $mapped = $mapping->map($data, [
@@ -180,6 +163,31 @@ $mapped = $mapping->map($data, [
     ]
 ]
 ```
+
+### Change relation mapping key
+```php
+$mapped = $mapping->map($data, [
+    \voilab\mapping\Mapping::rel('work', 'nextWork') => [
+        'description'
+    ]
+]);
+
+// results in
+[
+    'nextWork' => [
+        'description' => 'Free worker'
+    ]
+]
+```
+As an alternative, you may use this notation below. Code should not change anytime soon.
+```php
+$mapped = $mapping->map($data, [
+    'work as nextWork' => [
+        'description'
+    ]
+]);
+```
+
 
 ### Wildcard mapping
 It's experimental with objects.

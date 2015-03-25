@@ -98,8 +98,7 @@ class MappingTestCase extends AbstractMappingTestCase {
     public function testRelationOtherKey() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
-                'group' => [
-                    \voilab\mapping\Mapping::RELATION_KEY => 'mainGroup',
+                \voilab\mapping\Mapping::rel('mainGroup', 'group') => [
                     'id',
                     'name'
                 ]
