@@ -7,7 +7,7 @@ class FirstInCollection implements \voilab\mapping\Plugin {
     /**
      * @inheritDocs
      */
-    public function match ($key, $dottedKey) {
+    public function match($key, $dottedKey) {
         return strpos($key, '[]') > 0;
     }
 
@@ -17,7 +17,7 @@ class FirstInCollection implements \voilab\mapping\Plugin {
     public function getData(\voilab\mapping\Mapping $mapping, $data, $key) {
         $key = str_replace('[]', '', $key);
         list($relation, $hydrator) = $mapping->getRelationAndHydrator($data, $key);
-        return $relation && $hydrator instanceof FirstInCollectionInterface
+        return $hydrator instanceof FirstInCollectionInterface && $relation
             ? $hydrator->getFirst($relation)
             : null;
     }
