@@ -41,7 +41,7 @@ class StandardArray implements Hydrator, plugin\FirstInCollectionInterface {
      * @inheritDocs
      */
     public function toArray($data) {
-        return $data;
+        return (array) $data;
     }
 
 }

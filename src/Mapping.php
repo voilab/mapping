@@ -30,7 +30,7 @@ class Mapping {
 
     /**
      * Plugins used to manage dotted-keys
-     * @var plugin\Plugin[]
+     * @var Plugin[]
      */
     private $plugins = [];
 
@@ -223,7 +223,8 @@ class Mapping {
                 // force array, so an object will be automatically transformed.
                 // Objects will be transformed into an array automatically and
                 // can behave strangely
-                $map = array_merge($this->getHydrator($data)->toArray($data), $map);
+                $map = array_merge($this->getHydrator($data)
+                    ->toArray($data), $map);
             }
         }
         return $map;
@@ -237,7 +238,9 @@ class Mapping {
      * @return boolean
      */
     private function isCollection(array $mapping) {
-        return isset($mapping[0]) && is_array($mapping[0]) && count($mapping) == 1;
+        return isset($mapping[0])
+            && is_array($mapping[0])
+            && count($mapping) == 1;
     }
 
     /**
