@@ -91,21 +91,6 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
-
-### Change mapping key
-```php
-$mapped = $mapping->map($data, [
-    'id',
-    'personName' => 'name'
-]);
-
-// results in
-[
-    'id' => 1,
-    'personName' => 'John'
-]
-```
-
 ### One-to-one or many-to-one relation mapping
 ```php
 $mapped = $mapping->map($data, [
@@ -164,6 +149,20 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
+### Change mapping key
+```php
+$mapped = $mapping->map($data, [
+    'id',
+    'personName' => 'name'
+]);
+
+// results in
+[
+    'id' => 1,
+    'personName' => 'John'
+]
+```
+
 ### Change relation mapping key
 ```php
 $mapped = $mapping->map($data, [
@@ -210,9 +209,9 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
-### Other thoughts
-#### Change hydrators
-There are two default hydrators. One manage arrays (collection and relation) and the other manage objects (collection and relation).
+## Hydrators
+Hydrators are objects that extract data from the initial source. Two defaults, packaged in this lib, are for array management and simple objects (with getters and setters camelcased).
+### Change hydrators
 If your data needs to be handled differently, you will need to create your own hydrators (which must extend \voilab\mapping\Hydrator) and then set them at construction time:
 ```php
 $mapping = new \voilab\mapping\Mapping(
@@ -220,6 +219,7 @@ $mapping = new \voilab\mapping\Mapping(
     new \my\array\Hydrator()
 );
 ```
+Please check packaged hydrators sources to see how it works. It's quite simple.
 
 ## Plugins
 ### Introduction
@@ -278,7 +278,7 @@ $ phpunit
 
 ## Security
 
-If you discover any security related issues, please email fabien@voilab.org instead of using the issue tracker.
+If you discover any security related issues, please use the issue tracker.
 
 ## Credits
 

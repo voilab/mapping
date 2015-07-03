@@ -7,7 +7,7 @@ class Relation implements \voilab\mapping\Plugin {
     /**
      * @inheritDocs
      */
-    public function match ($key, $dottedKey) {
+    public function match($key, $dottedKey) {
         return true;
     }
 
