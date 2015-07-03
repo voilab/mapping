@@ -30,7 +30,7 @@ class Mapping {
 
     /**
      * Plugins used to manage dotted-keys
-     * @var plugin\Plugin[]
+     * @var Plugin[]
      */
     private $plugins = [];
 
@@ -182,39 +182,29 @@ class Mapping {
         elseif (is_array($data) || is_object($data)) {
             $use_wildcard = false;
             foreach ($mapping as $key => $m) {
-                if ($m == '*') {
+                list($dkey, $mkey) = $this->getKeys($m, $key);
+                // wildcard. Will agregate all data after mapping is done
+                if ($m === '*') {
                     $use_wildcard = true;
                 }
                 // mapping is an array. Means that we want to check in a
                 // relation
                 elseif (is_array($m)) {
-                    $relkey = $key;
-                    if (strpos($key, self::RELATION_ALIAS)) {
-                        $tmp = explode(self::RELATION_ALIAS, $key);
-                        $key = trim($tmp[1]);
-                        $relkey = trim($tmp[0]);
-                    }
-                    $relation = $this->getRelation($data, $relkey);
-                    $map[$key] = $relation ? $this->recursiveMap($relation, $m) : (
-                        // if relation is null, set an empty array for
-                        // collections or null for toOne relations
-                        $this->isCollection($m) ? [] : null
-                    );
+                    $map[$mkey] = $this->getRelationContent($data, $dkey, $m);
                 }
                 // key is int. That means we want the same key for mapping and
                 // for the data array/obj.
                 elseif (is_int($key)) {
-                    $map[$m] = $this->getKeyContent($data, $m);
-                }
-                // value is string. It's either a simple property of the
-                // array/obj or it's a function to call in the object
-                elseif (is_string($m)) {
-                    $map[$key] = $this->getKeyContent($data, $m);
+                    $map[$mkey] = $this->getKeyContent($data, $dkey);
                 }
                 // value is function. Call this function with data as first
                 // argument
                 elseif (is_callable($m)) {
-                    $map[$key] = $m($data);
+                    $map[$mkey] = $m($data);
+                }
+                // set custom value to custom mapping key
+                else {
+                    $map[$mkey] = $m;
                 }
             }
             // if value is a wildcard, fetch all fields with relations. Merge
@@ -238,6 +228,41 @@ class Mapping {
      */
     private function isCollection(array $mapping) {
         return isset($mapping[0]) && is_array($mapping[0]) && count($mapping) == 1;
+    }
+
+    /**
+     * Return the key for the data (or relation) and the key for the result
+     * mapping array
+     *
+     * @param mixed $mapping
+     * @param mixed $key
+     * @return array [key for data, key for mapping]
+     */
+    private function getKeys($mapping, $key) {
+        $dkey = $mkey = is_int($key) ? $mapping : $key;
+        if (strpos($dkey, self::RELATION_ALIAS)) {
+            $tmp = explode(self::RELATION_ALIAS, $dkey);
+            $mkey = trim($tmp[1]);
+            $dkey = trim($tmp[0]);
+        }
+        return [$dkey, $mkey];
+    }
+
+    /**
+     * Return the relation in the data array/object
+     *
+     * @param array|object $data
+     * @param string $key
+     * @param array $mapping the relation's mapping
+     * @return array|object|null
+     */
+    private function getRelationContent($data, $key, array $mapping) {
+        $relation = $this->getRelation($data, $key);
+        return $relation ? $this->recursiveMap($relation, $mapping) : (
+            // if relation is null, set an empty array for
+            // collections or null for toOne relations
+            $this->isCollection($mapping) ? [] : null
+        );
     }
 
     /**

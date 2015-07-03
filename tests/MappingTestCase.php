@@ -31,24 +31,11 @@ class MappingTestCase extends AbstractMappingTestCase {
         ], $result);
     }
 
-    public function testStringSameKey() {
-        $result = $this->mapping->map(
-            $this->data->getUser(1), [
-                'id' => 'id',
-                'login' => 'login'
-            ]
-        );
-        $this->assertSame([
-            'id' => 1,
-            'login' => 'login1'
-        ], $result);
-    }
-
     public function testStringDifferentKey() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
-                'data-id' => 'id',
-                'login-name' => 'login'
+                \voilab\mapping\Mapping::rel('id', 'data-id'),
+                \voilab\mapping\Mapping::rel('login', 'login-name')
             ]
         );
         $this->assertSame([
@@ -57,16 +44,35 @@ class MappingTestCase extends AbstractMappingTestCase {
         ], $result);
     }
 
-    public function testFunctionKey($idFunc, $loginFunc) {
+    public function testCustomValues() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
-                'id' => $idFunc,
-                'login' => $loginFunc
+                'id' => 1,
+                'login' => 'custom',
+                \voilab\mapping\Mapping::rel('id', 'data-id') => 'customId',
+                'bool' => true,
+                'json' => '{"id":1}'
             ]
         );
         $this->assertSame([
-            'id' => 2,
-            'login' => 'login1-func'
+            'id' => 1,
+            'login' => 'custom',
+            'data-id' => 'customId',
+            'bool' => true,
+            'json' => '{"id":1}'
+        ], $result);
+    }
+
+    public function testFunctionKey($idFunc, $loginFunc) {
+        $result = $this->mapping->map(
+            $this->data->getUser(1), [
+                'login' => $loginFunc,
+                \voilab\mapping\Mapping::rel('id', 'data-id') => $idFunc
+            ]
+        );
+        $this->assertSame([
+            'login' => 'login1-func',
+            'data-id' => 2
         ], $result);
     }
 

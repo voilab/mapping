@@ -91,21 +91,6 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
-
-### Change mapping key
-```php
-$mapped = $mapping->map($data, [
-    'id',
-    'personName' => 'name'
-]);
-
-// results in
-[
-    'id' => 1,
-    'personName' => 'John'
-]
-```
-
 ### One-to-one or many-to-one relation mapping
 ```php
 $mapped = $mapping->map($data, [
@@ -184,7 +169,12 @@ As an alternative, you may use this notation below. Code should not change anyti
 $mapped = $mapping->map($data, [
     'work as nextWork' => [
         'description'
-    ]
+    ],
+    // other examples...
+    'name as personName',
+    'name as randName' => function ($data) {
+        return $data['name'] . ' ' . rand(1, 999);
+    }
 ]);
 ```
 
@@ -207,6 +197,23 @@ $mapped = $mapping->map($data, [
         'name' => 'Fred'
         'age' => 30
     ]
+]
+```
+### Custom mapping
+You can add some custom static constants/values if needed
+```php
+$mapped = $mapping->map($data, [
+    'number' => 10,
+    'customConstant' => 'my custom constant',
+    // if you ask for an existing element, the constant will take over
+    'id as fixedId' => 2
+]);
+
+// results in
+[
+    'number' => 10,
+    'customConstant' => 'my custom constant',
+    'fixedId' => 2
 ]
 ```
 
@@ -239,9 +246,9 @@ $mapping->setPluginKeySeparator(null);
 Goes through a tree of one-to-one or many-to-one relations, until it reaches the key (here: type for section and name for interests).
 ```php
 $mapped = $mapping->map($data, [
-    'sectionType' => 'work.section.type',
+    'work.section.type as sectionType',
     'interests' => [[
-        'contactName' => 'contact.name'
+        'contact.name as contactName'
     ]]
 ]);
 
@@ -261,7 +268,7 @@ When encountering a one-to-many or many-to-many relation, it fetch the 1st eleme
 $mapping->addPlugin(new \voilab\mapping\plugin\FirstInCollection());
 
 $mapped = $mapping->map($data, [
-    'firstInterestContactName' => 'interests[].contact.name'
+    'interests[].contact.name as firstInterestContactName'
 ]);
 
 // results in

@@ -18,7 +18,7 @@ class MappingTestCase extends \voilab\mapping\test\AbstractMappingTestCase {
     public function testDottedKeyWithoutExistingMapping() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
-                'group-name' => 'mainGroup.name'
+                \voilab\mapping\Mapping::rel('mainGroup.name', 'group-name')
             ]
         );
         $this->assertSame([
@@ -29,7 +29,7 @@ class MappingTestCase extends \voilab\mapping\test\AbstractMappingTestCase {
     public function testDottedKeyWithExistingMapping() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
-                'group-name' => 'mainGroup.name',
+                \voilab\mapping\Mapping::rel('mainGroup.name', 'group-name'),
                 'mainGroup' => [
                     'name'
                 ]
@@ -46,7 +46,7 @@ class MappingTestCase extends \voilab\mapping\test\AbstractMappingTestCase {
     public function testNoDottedKey() {
         $result = $this->mapping->map(
             $this->data->getUser(1), [
-                'group-name' => 'mainGroup.test.name'
+                \voilab\mapping\Mapping::rel('mainGroup.test.name', 'group-name')
             ]
         );
         $this->assertSame([

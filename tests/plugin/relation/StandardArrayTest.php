@@ -31,7 +31,7 @@ class StandardArrayTest extends MappingTestCase {
             ]
         ];
         $result = $this->mapping->map($data, [
-            'deep-relation' => 'item.test.item.ok'
+            \voilab\mapping\Mapping::rel('item.test.item.ok', 'deep-relation')
         ]);
         $this->assertSame([
             'deep-relation' => true
