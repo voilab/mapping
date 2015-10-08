@@ -182,7 +182,7 @@ class Mapping {
         elseif (is_array($data) || is_object($data)) {
             $use_wildcard = false;
             foreach ($mapping as $key => $m) {
-                if ($m == '*') {
+                if ($m === '*') {
                     $use_wildcard = true;
                 }
                 // mapping is an array. Means that we want to check in a
@@ -240,7 +240,7 @@ class Mapping {
     private function isCollection(array $mapping) {
         return isset($mapping[0])
             && is_array($mapping[0])
-            && count($mapping) == 1;
+            && count($mapping) === 1;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace voilab\mapping\plugin;
 
+use voilab\mapping\Mapping;
+
 class Relation implements \voilab\mapping\Plugin {
 
     /**
@@ -14,7 +16,7 @@ class Relation implements \voilab\mapping\Plugin {
     /**
      * @inheritDocs
      */
-    public function getData(\voilab\mapping\Mapping $mapping, $data, $key) {
+    public function getData(Mapping $mapping, $data, $key) {
         return $mapping->getRelation($data, $key);
     }
 
