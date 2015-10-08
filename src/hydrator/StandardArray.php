@@ -13,7 +13,9 @@ class StandardArray implements Hydrator, plugin\FirstInCollectionInterface {
     public function getFirst($data) {
         // check if array OR object, because an array-collection could
         // contain objects
-        return isset($data[0]) && (is_object($data[0]) || is_array($data[0])) ? $data[0] : null;
+        return isset($data[0]) && (is_object($data[0]) || is_array($data[0]))
+            ? $data[0]
+            : null;
     }
 
     /**
@@ -27,7 +29,11 @@ class StandardArray implements Hydrator, plugin\FirstInCollectionInterface {
      * @inheritDocs
      */
     public function getRelation($data, $key) {
-        return isset($data[$key]) && is_array($data[$key]) ? $data[$key] : null;
+        // check if array OR object, because an array-collection could
+        // contain objects
+        return isset($data[$key]) && (is_array($data[$key]) || is_object($data[$key]))
+            ? $data[$key]
+            : null;
     }
 
     /**
