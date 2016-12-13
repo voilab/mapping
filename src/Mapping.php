@@ -169,8 +169,8 @@ class Mapping {
      * @param array|object $data
      * @param array $mapping
      * @param mixed $index the index key when in a loop
-     * @param array $parents tree of current parents if multiple loops
      * @param array $indexes tree of current indexes if multiple loops
+     * @param array $parents tree of current parents if multiple loops
      * @return array
      */
     private function recursiveMap($data, $mapping, $index = null, array $indexes = [], array $parents = []) {
@@ -200,7 +200,7 @@ class Mapping {
                         $relkey = trim($tmp[0]);
                     }
                     $relation = $this->getRelation($data, $relkey);
-                    $map[$key] = $relation ? $this->recursiveMap($relation, $m, $index, $indexes, $parents) : (
+                    $map[$key] = $relation ? $this->recursiveMap($relation, $m, null, $indexes, $parents) : (
                         // if relation is null, set an empty array for
                         // collections or null for toOne relations
                         $this->isCollection($m) ? [] : null
