@@ -169,20 +169,22 @@ class Mapping {
      * @param array|object $data
      * @param array $mapping
      * @param mixed $index the index key when in a loop
+     * @param array $parents tree of current parents if multiple loops
      * @param array $indexes tree of current indexes if multiple loops
      * @return array
      */
-    private function recursiveMap($data, $mapping, $index = null, array $indexes = []) {
+    private function recursiveMap($data, $mapping, $index = null, array $indexes = [], array $parents = []) {
         $map = [];
         if ($this->isCollection($mapping)) {
             if ($this->getHydrator($data)->isTraversable($data)) {
                 foreach ($data as $i => $o) {
-                    $indexes[] = $i;
-                    $map[] = $this->recursiveMap($o, $mapping[0], $i, $indexes);
+                    $map[] = $this->recursiveMap($o, $mapping[0], $i, $indexes, $parents);
                 }
             }
         }
         elseif (is_array($data) || is_object($data)) {
+            $indexes[] = $index;
+            $parents[] = $data;
             $use_wildcard = false;
             foreach ($mapping as $key => $m) {
                 if ($m === '*') {
@@ -198,7 +200,7 @@ class Mapping {
                         $relkey = trim($tmp[0]);
                     }
                     $relation = $this->getRelation($data, $relkey);
-                    $map[$key] = $relation ? $this->recursiveMap($relation, $m) : (
+                    $map[$key] = $relation ? $this->recursiveMap($relation, $m, $index, $indexes, $parents) : (
                         // if relation is null, set an empty array for
                         // collections or null for toOne relations
                         $this->isCollection($m) ? [] : null
@@ -217,7 +219,7 @@ class Mapping {
                 // value is function. Call this function with data as first
                 // argument
                 elseif (is_callable($m)) {
-                    $map[$key] = $m($data, $index, $indexes);
+                    $map[$key] = $m($data, $index, $indexes, $parents);
                 }
             }
             // if value is a wildcard, fetch all fields with relations. Merge

@@ -16,11 +16,17 @@ class ArrayData implements Data {
             'groups' => [
                 [
                     'id' => $nb,
-                    'name' => 'group' . $nb
+                    'name' => 'group' . $nb,
+                    'contact' => [
+                        'name' => 'contact' . $nb
+                    ]
                 ],
                 [
                     'id' => $nb + 1,
-                    'name' => 'group' . ($nb + 1)
+                    'name' => 'group' . ($nb + 1),
+                    'contact' => [
+                        'name' => 'contact' . ($nb + 1)
+                    ]
                 ]
             ]
         ];
