@@ -229,7 +229,7 @@ $mapped = $mapping->map($data, [
             'name' => function ($contact, $index, $indexes, $parents) {
                 // if you want to access the parent interest. The first parent
                 // is the top parent: 0 => main data, 1 => interest
-                return $contact['name'] ' for ' . $parents[1]['description'];
+                return $contact['name'] . ' for ' . $parents[1]['description'];
             }
         ]
     ]]
