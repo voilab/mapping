@@ -168,14 +168,17 @@ class Mapping {
      *
      * @param array|object $data
      * @param array $mapping
+     * @param mixed $index the index key when in a loop
+     * @param array $indexes tree of current indexes if multiple loops
      * @return array
      */
-    private function recursiveMap($data, $mapping) {
+    private function recursiveMap($data, $mapping, $index = null, array $indexes = []) {
         $map = [];
         if ($this->isCollection($mapping)) {
             if ($this->getHydrator($data)->isTraversable($data)) {
-                foreach ($data as $o) {
-                    $map[] = $this->recursiveMap($o, $mapping[0]);
+                foreach ($data as $i => $o) {
+                    $indexes[] = $i;
+                    $map[] = $this->recursiveMap($o, $mapping[0], $i, $indexes);
                 }
             }
         }
@@ -214,7 +217,7 @@ class Mapping {
                 // value is function. Call this function with data as first
                 // argument
                 elseif (is_callable($m)) {
-                    $map[$key] = $m($data);
+                    $map[$key] = $m($data, $index, $indexes);
                 }
             }
             // if value is a wildcard, fetch all fields with relations. Merge

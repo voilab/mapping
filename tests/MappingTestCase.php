@@ -70,6 +70,28 @@ class MappingTestCase extends AbstractMappingTestCase {
         ], $result);
     }
 
+    public function testFunctionIndex() {
+        $special = [
+            ['data' => 1],
+            ['data' => 2]
+        ];
+
+        $result = $this->mapping->map($this->data->getUser(1), [
+            'groups' => [[
+                'name',
+                'special' => function ($group, $index) use ($special) {
+                    return $special[$index]['data'];
+                }
+            ]]
+        ]);
+        $this->assertSame([
+            'groups' => [
+                ['name' => 'group1', 'special' => 1],
+                ['name' => 'group2', 'special' => 2]
+            ]
+        ], $result);
+    }
+
     protected function functionId($id) {
         return (int) $id + 1;
     }

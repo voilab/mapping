@@ -209,6 +209,37 @@ $mapped = $mapping->map($data, [
 ]
 ```
 
+### Advanced function mapping usage
+You may want to access the current index inside your function if you are inside
+a collection. It's as easy as:
+
+```php
+$special_for_interest = [
+    ['data' => 1],
+    ['data' => 2]
+];
+
+$mapped = $mapping->map($data, [
+    'interests' => [[
+        'description',
+        'special' => function ($interest, $index) use ($special_for_interest) {
+            return $special_for_interest[$index]['data'];
+        }
+    ]]
+]);
+
+// results in
+[
+    'interests' => [
+        ['description' => 'Some book', 'special' => 1],
+        ['description' => 'Football', 'special' => 2]
+    ]
+]
+```
+
+Note that a third parameter in your custom function represents an array of all
+current indexes, if you are in a deeper loop.
+
 ## Hydrators
 Hydrators are objects that extract data from the initial source. Two defaults, packaged in this lib, are for array management and simple objects (with getters and setters camelcased).
 ### Change hydrators
