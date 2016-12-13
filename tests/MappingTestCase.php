@@ -92,6 +92,29 @@ class MappingTestCase extends AbstractMappingTestCase {
         ], $result);
     }
 
+    public function testFunctionParent() {
+        $result = $this->mapping->map($this->data->getUser(1), [
+            'groups' => [[
+                'name',
+                'contact' => [
+                    'name' => function ($contact, $index, $indexes, $parents) {
+                        $group_name = is_object($parents[1])
+                            ? $parents[1]->getName()
+                            : $parents[1]['name'];
+
+                        return $contact['name'] . ' for ' . $group_name;
+                    }
+                ]
+            ]]
+        ]);
+        $this->assertSame([
+            'groups' => [
+                ['name' => 'group1', 'contact' => ['name' => 'contact1 for group1']],
+                ['name' => 'group2', 'contact' => ['name' => 'contact2 for group2']]
+            ]
+        ], $result);
+    }
+
     protected function functionId($id) {
         return (int) $id + 1;
     }

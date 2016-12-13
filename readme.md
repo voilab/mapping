@@ -224,21 +224,35 @@ $mapped = $mapping->map($data, [
         'description',
         'special' => function ($interest, $index) use ($special_for_interest) {
             return $special_for_interest[$index]['data'];
-        }
+        },
+        'contact' => [
+            'name' => function ($contact, $index, $indexes, $parents) {
+                // if you want to access the parent interest. The first parent
+                // is the top parent: 0 => main data, 1 => interest
+                return $contact['name'] ' for ' . $parents[1]['description'];
+            }
+        ]
     ]]
 ]);
 
 // results in
 [
     'interests' => [
-        ['description' => 'Some book', 'special' => 1],
-        ['description' => 'Football', 'special' => 2]
+        [
+            'description' => 'Some book',
+            'special' => 1,
+            'contact' => [
+                'name' => 'Some author for Some book'
+            ]
+        ],
+        [
+            'description' => 'Football',
+            'special' => 2,
+            'contact' => null
+        ]
     ]
 ]
 ```
-
-Note that a third parameter in your custom function represents an array of all
-current indexes, if you are in a deeper loop.
 
 ## Hydrators
 Hydrators are objects that extract data from the initial source. Two defaults, packaged in this lib, are for array management and simple objects (with getters and setters camelcased).
